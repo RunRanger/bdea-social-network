@@ -1,0 +1,11 @@
+
+{
+  "name": "bdea-social-network",
+  "dockerComposeFile": ["docker-compose.yml"],
+  "service": "app-sn",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [3000]
+  /*"extensions": [
+    "ms-python.python"
+  ]*/
+}
