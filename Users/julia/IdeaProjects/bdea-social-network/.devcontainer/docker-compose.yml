@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  app-sn:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    working_dir: /workspace
+    entrypoint: sleep infinity
+    volumes:
+      - ../:/workspace
+    ports:
+      - '3000:3000'
