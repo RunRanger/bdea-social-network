@@ -11,3 +11,31 @@ services:
       - ../:/workspace
     ports:
       - '3000:3000'
+
+  arango_db_1:
+    image: arangodb:latest
+    environment:
+      ARANGO_ROOT_PASSWORD: passw0rd
+    ports:
+      - '8528:8528'
+    command: sh -c 'arangodb'
+    
+  arango_db_2:
+    image: arangodb:latest
+    environment:
+      ARANGO_ROOT_PASSWORD: passw0rd
+    links:
+    - 'arango_db_1:db1'
+    ports:
+      - '8530:8530'
+    command: sh -c 'arangodb --starter.join db1'
+
+  arango_db_3:
+    image: arangodb:latest
+    environment:
+      ARANGO_ROOT_PASSWORD: passw0rd
+    links:
+    - 'arango_db_1:db1'
+    ports:
+      - '8531:8531'
+    command: sh -c 'arangodb --starter.join db1'
