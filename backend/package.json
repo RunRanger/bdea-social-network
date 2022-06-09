@@ -1,0 +1,15 @@
+{
+  "name": "query_executor",
+  "version": "1.0.0-alpha",
+  "description": "A VSCode Dev Container environment for Node.js + Typescript",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.11",
+    "prettier": "^1.18.2",
+    "typescript": "3.5.x"
+  },
+  "dependencies": {}
+}

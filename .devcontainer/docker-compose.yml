@@ -1,41 +1,48 @@
 version: '3'
 
 services:
-  app-sn:
-    build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
-    working_dir: /workspace
-    entrypoint: sleep infinity
-    volumes:
-      - ../:/workspace
+  agency:
+    container_name: agency
+    image: arangodb:latest
     ports:
-      - '3000:3000'
+      - "8529"
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: arangod --server.endpoint tcp://0.0.0.0:8529 --agency.my-address=tcp://agency:8529 --server.authentication false --agency.activate true --agency.size 1 --agency.endpoint tcp://agency:8529 --agency.supervision true
 
-  arango_db_1:
+  database1:
+    restart: always
+    container_name: database1
     image: arangodb:latest
-    environment:
-      ARANGO_ROOT_PASSWORD: passw0rd
+    depends_on:
+      - agency
     ports:
-      - '8528:8528'
-    command: sh -c 'arangodb'
-    
-  arango_db_2:
-    image: arangodb:latest
+      - "8529"
     environment:
-      ARANGO_ROOT_PASSWORD: passw0rd
-    links:
-    - 'arango_db_1:db1'
-    ports:
-      - '8530:8530'
-    command: sh -c 'arangodb --starter.join db1'
+      - ARANGO_NO_AUTH=1
+    command: arangod --server.authentication=false --server.endpoint tcp://0.0.0.0:8529 --cluster.my-address tcp://database1:8529 --cluster.my-role PRIMARY --cluster.agency-endpoint tcp://agency:8529
 
-  arango_db_3:
+  database2:
+    restart: always
+    container_name: database2
     image: arangodb:latest
-    environment:
-      ARANGO_ROOT_PASSWORD: passw0rd
-    links:
-    - 'arango_db_1:db1'
+    depends_on:
+      - agency
     ports:
-      - '8531:8531'
-    command: sh -c 'arangodb --starter.join db1'
+      - "8529"
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: arangod --server.authentication=false --server.endpoint tcp://0.0.0.0:8529 --cluster.my-address tcp://database2:8529 --cluster.my-role PRIMARY --cluster.agency-endpoint tcp://agency:8529
+
+  coordinator1:
+    restart: always
+    container_name: yw-coordinator1
+    image: arangodb:latest
+    depends_on:
+      - database1
+      - database2
+    ports:
+      - "11001:8529"
+    environment:
+      - ARANGO_NO_AUTH=1
+    command: arangod --server.authentication=false --server.endpoint tcp://0.0.0.0:8529 --cluster.my-address tcp://coordinator1:8529 --cluster.my-role COORDINATOR --cluster.agency-endpoint tcp://agency:8529
