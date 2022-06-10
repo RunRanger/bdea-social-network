@@ -36,7 +36,7 @@ services:
 
   coordinator1:
     restart: always
-    container_name: yw-coordinator1
+    container_name: coordinator1
     image: arangodb:latest
     depends_on:
       - database1

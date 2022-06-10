@@ -2,14 +2,17 @@
   "name": "query_executor",
   "version": "1.0.0-alpha",
   "description": "A VSCode Dev Container environment for Node.js + Typescript",
-  "main": "index.ts",
+  "main": "main.ts",
   "scripts": {
-    "start": "node index.ts"
+    "start": "ts-node ./src/main.ts"
   },
   "devDependencies": {
     "@types/node": "^12.7.11",
     "prettier": "^1.18.2",
-    "typescript": "3.5.x"
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "arangojs": "^7.8.0"
+  }
 }
