@@ -10,3 +10,4 @@ interface Tweet {
   numberOfLikes: number,
   numberOfShares: number
 }
+export default Tweet
