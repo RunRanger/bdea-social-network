@@ -3,7 +3,7 @@ import readTweets, { normalizeTweets } from './readTweets';
 import readTwitterFollowerRelation from './readTwitterFollowerRelation';
 import readTwitterUsers from "./readTwitterUsers";
 import {log} from "util";
-import createTweetAuthorRelation from './createTweetAuthorRelation';
+import createAuthorTweetRelation from './createAuthorTweetRelation';
 import assignTweetUser from './assignTweetUser';
 
 const DB_NAME = "socialNetwork"
@@ -43,39 +43,34 @@ const initData = async (db: Database) => {
     console.log("READING Follower Relations")
     let followerRelations = await readTwitterFollowerRelation();
     //mein laptop schafft nicht alle Einträge, deswegen nur die Hälfte :(
-    followerRelations = followerRelations.splice(0, followerRelations.length/2)
+    //followerRelations = followerRelations.splice(0, followerRelations.length/2)
     console.log(followerRelations.length)
 
     console.log("UPLOADING Follower Relations")
-    const followerRelationsEdgeCollection = await db.createEdgeCollection("followerRelations")
+    const followerRelationsEdgeCollection = await db.createEdgeCollection("follows")
     await followerRelationsEdgeCollection.saveAll(followerRelations).catch((err) => console.log(err.message))
-
-    console.log(await followerRelationsEdgeCollection.count())
+    console.log("Follower Relations: " + (await followerRelationsEdgeCollection.count()).count)
 
     console.log("READING Tweets")
     const tweets = await readTweets();
     const tweetsDB = normalizeTweets(tweets);
+
     console.log("UPLOADING Tweets")
-    
     const tweetCollection = await db.createCollection("tweets");
     let tweetIds: string[] = [];
-    
     await tweetCollection.saveAll(tweetsDB).then((docs) => {tweetIds = docs.map(doc => doc._key)} ,
       err => console.error('Failed to fetch document:', err)
     )
 
-    console.log("CREATING User Tweet Relations")
-    console.log(tweetIds.length);
-    const userTweetsCollection = assignTweetUser(tweets, users);
-    const tweetUserRelations = createTweetAuthorRelation(userTweetsCollection, tweetIds)
-    console.log("UPLOADING User Tweet Relations")
-    const userTweetRelationsEdgeCollection = await db.createEdgeCollection("userTweetRelations")
-    await userTweetRelationsEdgeCollection.saveAll(tweetUserRelations).catch((err) => console.log(err.message))
-    console.log("User-Tweet Relations: " + (await userTweetRelationsEdgeCollection.count()).count)
-  /*  const info = await tweetCollection.get();
-    const tweetDocs = await tweetCollection.documents([tweetIds[0], tweetIds[1]]);
-    console.log(info)
-    console.log(tweetDocs[1])*/
+    console.log("CREATING Author Tweet Relations")
+    const authorTweetsCollection = assignTweetUser(tweets, users);
+    const authorTweetRelations = createAuthorTweetRelation(authorTweetsCollection, tweetIds)
+
+    console.log("UPLOADING Author Tweet Relations")
+    const authorTweetRelationsEdgeCollection = await db.createEdgeCollection("wrote")
+    await authorTweetRelationsEdgeCollection.saveAll(authorTweetRelations).catch((err) => console.log(err.message))
+    console.log("Author-Tweet Relations: " + (await authorTweetRelationsEdgeCollection.count()).count)
+
     console.log("INITIAL LOAD COMPLETED");
   }
   catch (e: any) { console.log(e.message) }

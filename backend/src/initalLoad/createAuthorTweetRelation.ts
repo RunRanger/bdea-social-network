@@ -7,7 +7,7 @@ interface AuthorCollection {
   [name: string]: number[]
 }
 
-const createTweetAuthorRelation = (authorTweet: AuthorCollection, tweetKeys: string[]) => {
+const createAuthorTweetRelation = (authorTweet: AuthorCollection, tweetKeys: string[]) => {
   const result: Relation[] = [];
   Object.keys(authorTweet).forEach(author => {
     authorTweet[author].forEach(tweetIndex => { 
@@ -17,4 +17,4 @@ const createTweetAuthorRelation = (authorTweet: AuthorCollection, tweetKeys: str
   return result;
 }
 
-export default createTweetAuthorRelation;
+export default createAuthorTweetRelation;

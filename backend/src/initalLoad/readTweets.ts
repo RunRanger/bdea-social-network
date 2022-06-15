@@ -34,6 +34,5 @@ const normalizeTweets = (tweetsCSV: TweetCSV[]) => {
   });
  }
 
-
 export {normalizeTweets}
 export default readTweets;
