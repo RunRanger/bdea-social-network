@@ -1,8 +1,10 @@
 import { Database } from 'arangojs';
-import readTweets from './readTweets';
+import readTweets, { normalizeTweets } from './readTweets';
 import readTwitterFollowerRelation from './readTwitterFollowerRelation';
 import readTwitterUsers from "./readTwitterUsers";
 import {log} from "util";
+import createTweetAuthorRelation from './createTweetAuthorRelation';
+import assignTweetUser from './assignTweetUser';
 
 const DB_NAME = "socialNetwork"
 
@@ -33,42 +35,50 @@ const initData = async (db: Database) => {
 
     const userCollection = await db.createCollection("users");
 
-    let userIds: string[] = []
-
-    await userCollection.saveAll(users).then((docs) => {userIds = docs.map(doc => doc._key)} ,
+    await userCollection.saveAll(users).then(() => {/*nothing to do*/} ,
         err => console.error('Failed to fetch document:', err)
     )
 
 
-    console.log("READING User Relations")
-    let userRelations = await readTwitterFollowerRelation();
+    console.log("READING Follower Relations")
+    let followerRelations = await readTwitterFollowerRelation();
     //mein laptop schafft nicht alle Einträge, deswegen nur die Hälfte :(
-    userRelations = userRelations.splice(0, userRelations.length/2)
-    console.log(userRelations.length)
+    followerRelations = followerRelations.splice(0, followerRelations.length/2)
+    console.log(followerRelations.length)
 
-    console.log("UPLOADING User Relations")
-    const userRelationsEdgeCollection = await db.createEdgeCollection("userRelations")
-    await userRelationsEdgeCollection.saveAll(userRelations).catch((err) => console.log(err.message))
+    console.log("UPLOADING Follower Relations")
+    const followerRelationsEdgeCollection = await db.createEdgeCollection("followerRelations")
+    await followerRelationsEdgeCollection.saveAll(followerRelations).catch((err) => console.log(err.message))
 
-    console.log(await userRelationsEdgeCollection.count())
-    console.log(await userRelationsEdgeCollection.any())
+    console.log(await followerRelationsEdgeCollection.count())
 
     console.log("READING Tweets")
     const tweets = await readTweets();
-
+    const tweetsDB = normalizeTweets(tweets);
     console.log("UPLOADING Tweets")
     
     const tweetCollection = await db.createCollection("tweets");
-    let ids: string[] = [];
-    await tweetCollection.saveAll(tweets).then((docs) => {ids = docs.map(doc => doc._key)} ,
+    let tweetIds: string[] = [];
+    
+    await tweetCollection.saveAll(tweetsDB).then((docs) => {tweetIds = docs.map(doc => doc._key)} ,
       err => console.error('Failed to fetch document:', err)
     )
-    const info = await tweetCollection.get();
-    const docs = await tweetCollection.documents([ids[0], ids[1]]);
+
+    console.log("CREATING User Tweet Relations")
+    console.log(tweetIds.length);
+    const userTweetsCollection = assignTweetUser(tweets, users);
+    const tweetUserRelations = createTweetAuthorRelation(userTweetsCollection, tweetIds)
+    console.log("UPLOADING User Tweet Relations")
+    const userTweetRelationsEdgeCollection = await db.createEdgeCollection("userTweetRelations")
+    await userTweetRelationsEdgeCollection.saveAll(tweetUserRelations).catch((err) => console.log(err.message))
+    console.log("User-Tweet Relations: " + (await userTweetRelationsEdgeCollection.count()).count)
+  /*  const info = await tweetCollection.get();
+    const tweetDocs = await tweetCollection.documents([tweetIds[0], tweetIds[1]]);
     console.log(info)
-    console.log(docs[1])
+    console.log(tweetDocs[1])*/
+    console.log("INITIAL LOAD COMPLETED");
   }
-  catch (e: any) { console.log(e.message) };
+  catch (e: any) { console.log(e.message) }
 }
 
 export { runInitalLoad }

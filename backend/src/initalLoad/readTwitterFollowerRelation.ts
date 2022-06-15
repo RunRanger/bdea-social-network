@@ -13,14 +13,13 @@ const readTwitterFollowerRelation = async () => {
   lines.forEach(line => {
 
     const ids = line.split(" ");
-    if(ids[0] && ids[1])
-      follower.push({_from: 'users/' + ids[0].replace("\r", ""), _to: 'users/' + ids[1].replace("\r", "")})
-    /*
     if (ids.length !== 2)
       return;
-    if(!follower[ids[0]])
-      follower[ids[0]] = []
-    follower[ids[0]].push(ids[1]);*/
+    if(ids[0] && ids[1])
+      follower.push({
+        _from: 'users/' + ids[0].replace("\r", ""),
+        _to: 'users/' + ids[1].replace("\r", "")
+      })
   })
   return follower;
 }

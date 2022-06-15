@@ -1,5 +1,4 @@
 interface Tweet {
-  id: string,
   author: string,
   content: string,
   country: string,
@@ -10,4 +9,12 @@ interface Tweet {
   numberOfLikes: number,
   numberOfShares: number
 }
+
+interface TweetCSV extends Tweet {
+  id: string,
+  author: string
+}
+
+export { TweetCSV, Tweet }
+
 export default Tweet
