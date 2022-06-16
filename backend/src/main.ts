@@ -7,13 +7,14 @@ import queryTopFollowersOfUsersWithTopFollowers from './queries/queryTopFollower
 import queryFollowerCountOfUser from "./queries/queryFollowerCountOfUser";
 import User from "./types/User";
 import queryAccountsUserFollows from "./queries/queryAccountsUserFollows";
+import queryTweetsWithWords from "./queries/queryTweetsWithWords";
 	
 
 
 const main = async () => {
   const db = await runInitalLoad();
 
-  /*
+
   const tweets = await readTweets();
   const likes = Math.max(...tweets.map(tweet => tweet.numberOfLikes));
   let mostLikes = 0;
@@ -57,6 +58,10 @@ const main = async () => {
   const accountsUserFollows =  await queryAccountsUserFollows(db, top100[0].user._id)
   console.log(accountsUserFollows)
 
+  /* TEST TWEETS WITH WORDS */
+  console.log('TEST TWEETS WITH WORDS')
+  const tweetsWithWords = await queryTweetsWithWords(db, ['and', 'still'])
+  console.log(tweetsWithWords)
 
 }
 

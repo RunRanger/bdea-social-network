@@ -7,7 +7,7 @@ const queryTopFollower = async (db: Database, count = 100) => {
       COLLECT id = f._to WITH COUNT INTO count
       SORT count DESC
       LIMIT ${count}
-      RETURN { id, count}
+      RETURN { user: DOCUMENT(id), count:count}
     `).then(result => resolve(result.all())).catch(e => reject(e))
   });
 }
