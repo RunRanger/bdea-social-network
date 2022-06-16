@@ -4,7 +4,7 @@
   "description": "A VSCode Dev Container environment for Node.js + Typescript",
   "main": "main.ts",
   "scripts": {
-    "start": "ts-node ./src/main.ts"
+    "start": " node --max_old_space_size=4096 --require ts-node/register ./src/main.ts"
   },
   "devDependencies": {
     "@types/node": "^12.7.11",
@@ -13,6 +13,7 @@
     "typescript": "^4.7.3"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.2.0",
     "@types/csv-parse": "^1.2.2",
     "arangojs": "^7.8.0",
     "csv-parse": "^5.1.0"

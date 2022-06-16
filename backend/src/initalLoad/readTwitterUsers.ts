@@ -1,4 +1,6 @@
 import fs from 'fs';
+import { faker } from '@faker-js/faker';
+import User from '../types/User';
 
 const readTwitterUsers = async () => {
 
@@ -13,7 +15,7 @@ const readTwitterUsers = async () => {
             users.add(ids[1].replace("\r", ""));
     })
     return Array.from(users).map((user => {
-        return {_key: user}
+        return { _key: user, name: faker.name.firstName() + " " + faker.name.lastName() } as User;
     }));
 }
 
