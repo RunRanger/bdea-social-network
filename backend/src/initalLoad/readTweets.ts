@@ -29,7 +29,12 @@ const readTweets = async () => {
 
 const normalizeTweets = (tweetsCSV: TweetCSV[]) => {
   return tweetsCSV.map(tweetCSV => {
-    const { id, author, ...tweet } = tweetCSV;
+    let { id, author, ...tweet } = tweetCSV;
+    try {
+      tweet.numberOfLikes = parseInt(tweet.numberOfLikes.toString())
+      tweet.numberOfShares = parseInt(tweet.numberOfShares.toString())
+    }
+    catch (e) { /*skip*/}
     return tweet as Tweet
   });
  }

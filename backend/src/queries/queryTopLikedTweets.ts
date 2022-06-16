@@ -3,11 +3,10 @@ import { Database } from "arangojs";
 const queryTopLikedTweets = async (db: Database, count = 100) => {
   return new Promise((resolve, reject) => {
     db.query(`
-    FOR l IN likes
-      COLLECT id = l._to WITH COUNT INTO count
-      SORT count DESC
+    FOR t IN tweets
+      SORT t.numberOfLikes DESC
       LIMIT ${count}
-      RETURN { id, count}
+      RETURN { id: t._key, count: t.numberOfLikes}
     `).then(result => resolve(result.all())).catch(e => reject(e))
   });
 }
