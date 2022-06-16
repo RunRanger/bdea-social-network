@@ -67,7 +67,24 @@ const initData = async (db: Database) => {
     await tweetCollection.saveAll(tweetsDB).then((docs) => { tweetIds = docs.map(doc => doc._key) },
       err => console.error('Failed to fetch document:', err)
     )
+
     tweetsDB = [];
+
+    await db.createView("post_view", {
+      links: {
+        tweets: {
+          includeAllFields: true,
+          analyzers: ["identity"],
+          fields: {
+            "content": {
+              analyzers: ["text_en"]
+            }
+          }
+          }
+        }
+      }
+    )
+
     
     console.log("CREATING Author Tweet Relations")
     let authorTweetsCollection: UserTweetsCollection|null = assignTweetUser(tweets, users);
