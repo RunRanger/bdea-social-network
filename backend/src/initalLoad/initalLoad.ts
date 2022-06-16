@@ -84,7 +84,7 @@ const initData = async (db: Database) => {
 
 
     console.log("CREATING & UPLOADING User Like Relations")
-    const userLikeRelationsEdgeCollection = await db.createEdgeCollection<Relation>("likes")
+    const userLikeRelationsEdgeCollection = await db.createEdgeCollection<Relation>("liked")
     const saveLikesToDB = async (relations: Relation[]) => {
       try {
         await userLikeRelationsEdgeCollection.saveAll(relations)
