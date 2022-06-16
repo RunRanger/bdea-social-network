@@ -11,7 +11,7 @@ const createAuthorTweetRelation = (authorTweet: AuthorCollection, tweetKeys: str
   const result: Relation[] = [];
   Object.keys(authorTweet).forEach(author => {
     authorTweet[author].forEach(tweetIndex => { 
-      result.push({_to: "tweets/" + tweetKeys[tweetIndex], _from: "users/" + author})
+      result.push({_to: "tweets/" + tweetKeys[tweetIndex], _from: "users/" + author} as Relation)
     })
    })
   return result;

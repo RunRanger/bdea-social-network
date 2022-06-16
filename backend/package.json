@@ -4,7 +4,7 @@
   "description": "A VSCode Dev Container environment for Node.js + Typescript",
   "main": "main.ts",
   "scripts": {
-    "start": "ts-node ./src/main.ts"
+    "start": " node --max_old_space_size=4096 --require ts-node/register ./src/main.ts"
   },
   "devDependencies": {
     "@types/node": "^12.7.11",

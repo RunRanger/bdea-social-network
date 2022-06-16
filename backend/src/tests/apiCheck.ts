@@ -1,4 +1,5 @@
 import fs from 'fs';
+import readTweets from '../initalLoad/readTweets';
 
 interface FollowerCounter {
   [name: string]: number
@@ -32,6 +33,8 @@ const getTopFollwerRelation = async () => {
   
   return { id: top, count: c };
 }
+
+
 
 
 export {getTopFollwerRelation}

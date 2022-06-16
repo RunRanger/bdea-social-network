@@ -1,7 +1,7 @@
 import {TweetCSV} from '../types/Tweet';
 import User from '../types/User';
 
-interface UserTweetsCollection {
+export interface UserTweetsCollection {
   [name: string]: number[]
 }
 
