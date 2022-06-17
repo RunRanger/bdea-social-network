@@ -15,11 +15,10 @@ const queryTopLikedTweets = async (db: Database, count = 100, words: string[] = 
   return new Promise((resolve, reject) => {
     db.query(`
     FOR t IN tweets
+    ${filter}
     SORT t.numberOfLikes DESC
     LIMIT ${count}
-    ${filter}
     RETURN t
-
     `).then(result => resolve(result.all())).catch(e => reject(e))
   });
 }

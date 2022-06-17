@@ -9,10 +9,12 @@ import Relation from '../types/Relation';
 import Tweet from '../types/tweet';
 import User from '../types/User';
 import { DocumentCollection } from 'arangojs/collection';
+import createFanout from './createFanout';
+import shuffle from '../utils/shuffleArray';
 
 const DB_NAME = "socialNetwork"
 
-const runInitalLoad = async () => {
+const runInitalLoad = async (limiter = -1) => {
   const initDb = new Database('http://127.0.0.1:11001');
   const dbs = await initDb.databases();
   if (dbs.findIndex(db => db.name === DB_NAME) !== -1)
@@ -20,17 +22,14 @@ const runInitalLoad = async () => {
   return initDatabase(initDb);
 }
 
-const initDatabase = async (db: Database) => {
+const initDatabase = async (db: Database, limiter = -1) => {
   console.log("CREATING Database")
   const initDb = await db.createDatabase(DB_NAME)
-  await initData(initDb);
+  await initData(initDb, limiter);
   return initDb;
 }
 
-
-
-
-const initData = async (db: Database) => {
+const initData = async (db: Database, limiter = -1) => {
   try {
     console.log("READING Users")
     const users = await readTwitterUsers()
@@ -58,7 +57,9 @@ const initData = async (db: Database) => {
 
     
     console.log("READING Tweets")
-    const tweets = await readTweets();
+    let tweets = await (await readTweets());
+    if (limiter !== -1)
+      tweets = shuffle(tweets).slice(0, limiter);
    
     console.log("UPLOADING Tweets")
     let tweetIds: string[] = [];
@@ -82,8 +83,6 @@ const initData = async (db: Database) => {
     authorTweetsCollection = null;
     authorTweetRelations = null;
     
-
-
     console.log("CREATING & UPLOADING User Like Relations")
     const userLikeRelationsEdgeCollection = await db.createEdgeCollection<Relation>("liked")
     const saveLikesToDB = async (relations: Relation[]) => {
@@ -95,6 +94,9 @@ const initData = async (db: Database) => {
     }
     await createUserLikesRelation(users, tweets, tweetIds, saveLikesToDB);
     console.log("Like Relations: " + (await userLikeRelationsEdgeCollection.count()).count)
+
+    console.log("CREATING & UPLOAD Fanout")
+    await createFanout(db, users);
 
     console.log("INITIAL LOAD COMPLETED");
   }

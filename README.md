@@ -25,7 +25,7 @@ backend
 > queryTopFollowersOfUsersWithTopFollowers
 
 4. Auflisten der Informationen für die persönliche Startseite eines beliebigen Accounts (am besten mit den in 2) gefundenen Accounts ausprobieren); die Startseite soll Folgendes beinhalten (als getrennte Queries umsetzen)
-  
+
     * die Anzahl der Follower
     > queryFollowerCoutOfUser.ts
 
@@ -33,10 +33,10 @@ backend
     > queryAccountsUserFollows.ts
 
     * wahlweise die 25 neusten oder die 25 beliebtesten Posts der verfolgten Accounts (per DB-Abfrage)
-    >
+    > queryPostsOfFollowedUsers.ts
 
-5. Caching der Posts für die Startseite (vgl. 4), erfordert einen sog. Fan-Out in den Cache jedes Followers beim Schreiben eines neuen Posts 
->
+5. Caching der Posts für die Startseite (vgl. 4), erfordert einen sog. Fan-Out in den Cache jedes Followers beim Schreiben eines neuen Posts
+> 
 
 6. Auflisten der 25 beliebtesten Posts, die ein geg. Wort enthalten (falls möglich auch mit UND-Verknüpfung mehrerer Worte)
 > queryTopLikedTweets.ts
