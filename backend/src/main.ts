@@ -8,13 +8,14 @@ import queryFollowerCountOfUser from "./queries/queryFollowerCountOfUser";
 import User from "./types/User";
 import queryAccountsUserFollows from "./queries/queryAccountsUserFollows";
 import queryTweetsWithWords from "./queries/queryTweetsWithWords";
+import queryPostsOfAccount from "./queries/queryPostsOfAccount";
 	
 
 
 const main = async () => {
   const db = await runInitalLoad();
 
-
+  /*
   const tweets = await readTweets();
   const likes = Math.max(...tweets.map(tweet => tweet.numberOfLikes));
   let mostLikes = 0;
@@ -42,6 +43,13 @@ const main = async () => {
   console.log("End Top liked Tweet: " + ((new Date().getTime() - timestamp)/1000) + " seconds");
 
 
+  /* TEST POSTS OF TOP100[0] USER */
+  const userPosts: any = await queryPostsOfAccount(db, 'users/153226312')
+  console.log(userPosts)
+
+
+
+  return
 
   /* TEST TOP 1 FOLLOWERS OF USERS WITH TOP FOLLOWERS */
   const top100FollowersFollower: any = await queryTopFollowersOfUsersWithTopFollowers(db, top100.map((el:any) => el.user._id), 100)
