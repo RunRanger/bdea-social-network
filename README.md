@@ -16,7 +16,7 @@ backend
 
 # Queries
 1. Auflisten der Posts, die von einem Account gemacht wurden, bzw. ihm zugeordnet wurden
->
+> queryPostsOfAccount.ts
 
 2. Finden der 100 Accounts mit den meisten Followern
 > queryTopFollower.ts
@@ -30,7 +30,7 @@ backend
     > queryFollowerCoutOfUser.ts
 
     * die Anzahl der verfolgten Accounts
-    >
+    > queryAccountsUserFollows.ts
 
     * wahlweise die 25 neusten oder die 25 beliebtesten Posts der verfolgten Accounts (per DB-Abfrage)
     >
@@ -39,4 +39,4 @@ backend
 >
 
 6. Auflisten der 25 beliebtesten Posts, die ein geg. Wort enthalten (falls möglich auch mit UND-Verknüpfung mehrerer Worte)
->
+> queryTweetsWithWords.ts (UNVOLLSTÄNDIG)

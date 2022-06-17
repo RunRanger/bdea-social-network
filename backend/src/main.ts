@@ -6,14 +6,15 @@ import queryTopFollowersOfUsersWithTopFollowers from './queries/queryTopFollower
 import queryFollowerCountOfUser from "./queries/queryFollowerCountOfUser";
 import queryAccountsUserFollows from "./queries/queryAccountsUserFollows";
 import queryTweetsWithWords from "./queries/queryTweetsWithWords";
-	
+import queryPostsOfAccount from "./queries/queryPostsOfAccount";
+
 
 
 const main = async () => {
   const db = await runInitalLoad();
 
 
-  /* TEST TOP 1 Follower */ 
+  /* TEST TOP 1 Follower */
   const top100: any = await queryTop100Follower(db, 1);
   const check = await getTopFollwerRelation();
   console.log(top100)
@@ -27,6 +28,9 @@ const main = async () => {
   console.log("End Top liked Tweet: " + ((new Date().getTime() - timestamp)/1000) + " seconds");
 
 
+  /* TEST POSTS OF TOP100[0] USER */
+  const userPosts: any = await queryPostsOfAccount(db, 'users/153226312')
+  console.log(userPosts)
 
   /* TEST TOP 1 FOLLOWERS OF USERS WITH TOP FOLLOWERS */
   const top100FollowersFollower: any = await queryTopFollowersOfUsersWithTopFollowers(db, top100.map((el:any) => el.user._id), 100)
