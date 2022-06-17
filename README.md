@@ -16,7 +16,7 @@ backend
 
 # Queries
 1. Auflisten der Posts, die von einem Account gemacht wurden, bzw. ihm zugeordnet wurden
->
+> queryPostsOfAccount.ts
 
 2. Finden der 100 Accounts mit den meisten Followern
 > queryTopFollower.ts
