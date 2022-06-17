@@ -1,34 +1,19 @@
 import queryTop100Follower from './queries/queryTopFollower';
 import { runInitalLoad } from './initalLoad/initalLoad';
-import readTweets from './initalLoad/readTweets';
 import { getTopFollwerRelation } from './tests/apiCheck';
 import queryTopLikedTweets from './queries/queryTopLikedTweets';
 import queryTopFollowersOfUsersWithTopFollowers from './queries/queryTopFollowersOfUsersWithTopFollowers';
 import queryFollowerCountOfUser from "./queries/queryFollowerCountOfUser";
-import User from "./types/User";
 import queryAccountsUserFollows from "./queries/queryAccountsUserFollows";
 import queryTweetsWithWords from "./queries/queryTweetsWithWords";
 import queryPostsOfAccount from "./queries/queryPostsOfAccount";
-	
+
 
 
 const main = async () => {
   const db = await runInitalLoad();
 
-  /*
-  const tweets = await readTweets();
-  const likes = Math.max(...tweets.map(tweet => tweet.numberOfLikes));
-  let mostLikes = 0;
-  for (let i = 0; i < tweets.length; i++)
-  {
-    if (tweets[i].numberOfLikes == 429159)
-      console.log(typeof (tweets[i].numberOfLikes));
-    const nr = parseInt(tweets[i].numberOfLikes.toString())
-    if (mostLikes < nr)
-      mostLikes = tweets[i].numberOfLikes;
-  }
 
-  console.log(likes + " / " + mostLikes);
   /* TEST TOP 1 Follower */
   const top100: any = await queryTop100Follower(db, 1);
   const check = await getTopFollwerRelation();
@@ -46,10 +31,6 @@ const main = async () => {
   /* TEST POSTS OF TOP100[0] USER */
   const userPosts: any = await queryPostsOfAccount(db, 'users/153226312')
   console.log(userPosts)
-
-
-
-  return
 
   /* TEST TOP 1 FOLLOWERS OF USERS WITH TOP FOLLOWERS */
   const top100FollowersFollower: any = await queryTopFollowersOfUsersWithTopFollowers(db, top100.map((el:any) => el.user._id), 100)
