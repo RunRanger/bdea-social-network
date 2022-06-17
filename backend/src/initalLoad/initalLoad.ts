@@ -70,22 +70,6 @@ const initData = async (db: Database) => {
 
     tweetsDB = [];
 
-    await db.createView("post_view", {
-      links: {
-        tweets: {
-          includeAllFields: true,
-          analyzers: ["identity"],
-          fields: {
-            "content": {
-              analyzers: ["text_en"]
-            }
-          }
-          }
-        }
-      }
-    )
-
-    
     console.log("CREATING Author Tweet Relations")
     let authorTweetsCollection: UserTweetsCollection|null = assignTweetUser(tweets, users);
     let authorTweetRelations: Relation[]|null = createAuthorTweetRelation(authorTweetsCollection, tweetIds)
