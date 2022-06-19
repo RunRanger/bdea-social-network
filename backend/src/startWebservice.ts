@@ -65,7 +65,6 @@ const startWebservice = (db: Database) => {
   })
 
   app.post("/api/fanout/:userId", async (req, res) => {
-    console.log("called")
     const userId = req.params.userId;
     const tweet = req.body;
     if (!tweet)
