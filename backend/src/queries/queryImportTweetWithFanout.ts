@@ -16,13 +16,13 @@ const queryInsertTweetWithFanout = async (db: Database, userId:string, tweet: Tw
     } INTO tweets RETURN NEW)
     LET followers = (
       FOR f IN follows
-        FILTER f._to == '${userId}'
+        FILTER f._to == '${"users/"+userId}'
         RETURN f._from)
     FOR f in followers
         INSERT {
           _from: f
           _to: tweet._id
-        }   
+        } INTO fanout  
     
     `).then(result => resolve(result.all())).catch(e => reject(e))
     });
