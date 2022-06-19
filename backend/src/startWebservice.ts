@@ -5,14 +5,18 @@ import queryFanOut from "./queries/queryFanOut";
 import queryFollowerCountOfUser from "./queries/queryFollowerCountOfUser";
 import queryPostsOfAccount from "./queries/queryPostsOfAccount";
 import queryPostsOfFollowedUsers from "./queries/queryPostsOfFollowedUsers";
+import queryRandomUsers from "./queries/queryRandomUsers";
 import queryTopFollower from "./queries/queryTopFollower";
 import queryTopFollowersOfUsersWithTopFollowers from "./queries/queryTopFollowersOfUsersWithTopFollowers";
 import queryTopLikedTweets from "./queries/queryTopLikedTweets";
+import cors from 'cors';
 
 const PORT = 10005;
 
 const startWebservice = (db: Database) => {
   const app = express();
+
+  app.use(cors());
 
   //1. Posts of Accounts
   app.get('/api/posts/:userId', async (req, res) => {
@@ -62,6 +66,21 @@ const startWebservice = (db: Database) => {
     const words = req.params.words.split("%20");
     await queryTopLikedTweets(db, 25, words).then(result => res.json(result)).catch(e => res.status(500).json(e));
   });
+
+
+  //ADDITONAL Queries
+  app.get('/api/randomUsers', async (req, res) => { 
+    await queryRandomUsers(db, 5).then(result => res.json(result)).catch(e => res.status(500).json(e));
+  })
+  app.get('/api/randomUsers/:amountUsers', async (req, res) => { 
+    try {
+      const amountUsers = parseInt(req.params.amountUsers);
+      await queryRandomUsers(db, amountUsers).then(result => res.json(result)).catch(e => res.status(500).json(e));
+    }
+    catch (e) { }
+    
+  })
+
 
   app.listen(PORT, () =>
     console.log(`App listening on port ${PORT}!`),
