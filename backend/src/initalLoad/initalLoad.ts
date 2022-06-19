@@ -19,7 +19,7 @@ const runInitalLoad = async (limiter = -1) => {
   const dbs = await initDb.databases();
   if (dbs.findIndex(db => db.name === DB_NAME) !== -1)
     return initDb.database(DB_NAME);
-  return initDatabase(initDb);
+  return initDatabase(initDb, limiter);
 }
 
 const initDatabase = async (db: Database, limiter = -1) => {
