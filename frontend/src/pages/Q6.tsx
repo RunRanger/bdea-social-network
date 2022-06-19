@@ -1,42 +1,56 @@
-import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useMemo } from "react";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useState } from "react";
 import axios from "axios";
 import Tweet from "../types/Tweet";
-import User from "../components/User";
-import UserT from "../types/User";
-
-interface ReturnType {
-  user: UserT;
-  count: number;
-}
+import TweetList from "../components/TweetList";
 
 const Q2 = () => {
-  const [state, setState] = useState<ReturnType[]>([]);
+  const [state, setState] = useState<Tweet[]>([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const getData = async () => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+  const handleSubmit = async () => {
+    setLoading(true);
+    const words = input.replace(" ", "%20");
     const response = await axios.get(
-      "localhost:10005/api/top100followersoftop100followers"
+      "http://localhost:10005/api/top25tweetswithwords/" + words
     );
     setState(response.data);
+    setLoading(false);
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  const tweetList = useMemo(() => <TweetList tweets={state} />, [loading]);
 
   return (
     <Box>
       <Typography variant="h4" m={3}>
-        Top 100 Followers
+        Top 25 tweets of with some words
       </Typography>
       <Grid container>
-        {state.map((user) => (
-          <Grid item xs={3}>
-            <User user={user.user} />
-            <Typography>{user.count}</Typography>
-          </Grid>
-        ))}
+        <Grid item xs={12}>
+          <TextField value={input} onChange={handleInputChange} />
+          <Button onClick={handleSubmit}>Submit</Button>
+        </Grid>
+        <Grid item xs={12}>
+          {loading ? (
+            <Grid item xs={12} display="flex" justifyContent="center">
+              <CircularProgress />
+            </Grid>
+          ) : (
+            tweetList
+          )}
+        </Grid>
       </Grid>
     </Box>
   );

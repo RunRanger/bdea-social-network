@@ -67,6 +67,10 @@ const startWebservice = (db: Database) => {
     await queryTopLikedTweets(db, 25, words).then(result => res.json(result)).catch(e => res.status(500).json(e));
   });
 
+  app.get('/api/top25tweetswithwords/', async (req, res) => {
+    await queryTopLikedTweets(db, 25).then(result => res.json(result)).catch(e => res.status(500).json(e));
+  });
+
 
   //ADDITONAL Queries
   app.get('/api/randomUsers', async (req, res) => { 

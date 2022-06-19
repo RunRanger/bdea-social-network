@@ -7,7 +7,7 @@ const queryPostsOfFollowedUsers = async (db: Database, userId: string, mode: 'ne
         db.query(`
         LET USERS = (
           FOR f IN follows
-               FILTER f._from == '${userId}'
+               FILTER f._from == '${"users/" +userId}'
                RETURN f._to
           )
           
