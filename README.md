@@ -13,6 +13,14 @@ backend
 >npm start
 
 
+frontend
+> cd frontend
+
+> npm install
+
+> npm start
+
+
 
 # Queries
 1. Auflisten der Posts, die von einem Account gemacht wurden, bzw. ihm zugeordnet wurden

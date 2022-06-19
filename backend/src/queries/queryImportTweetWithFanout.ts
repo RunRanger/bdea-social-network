@@ -5,12 +5,12 @@ const queryInsertTweetWithFanout = async (db: Database, userId:string, tweet: Tw
     return new Promise((resolve, reject) => {
         db.query(`
     let tweet = (INSERT {
-      content: ${tweet.content},
-      country: ${tweet.country}
-      dateTime: ${tweet.dateTime},
-      language: ${tweet.language},
-      latitude: ${tweet.latitude},
-      longitude: ${tweet.longitude},
+      content: '${tweet.content}',
+      country: '${tweet.country}',
+      dateTime: DATE_NOW(),
+      language: '${tweet.language}',
+      latitude: '${tweet.latitude}',
+      longitude: '${tweet.longitude}',
       numberOfLikes: ${tweet.numberOfLikes},
       numberOfShares: ${tweet.numberOfShares}
     } INTO tweets RETURN NEW)
@@ -20,7 +20,7 @@ const queryInsertTweetWithFanout = async (db: Database, userId:string, tweet: Tw
         RETURN f._from)
     FOR f in followers
         INSERT {
-          _from: f
+          _from: f,
           _to: tweet._id
         } INTO fanout  
     

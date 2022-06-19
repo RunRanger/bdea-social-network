@@ -10,12 +10,15 @@ import queryTopFollower from "./queries/queryTopFollower";
 import queryTopFollowersOfUsersWithTopFollowers from "./queries/queryTopFollowersOfUsersWithTopFollowers";
 import queryTopLikedTweets from "./queries/queryTopLikedTweets";
 import cors from 'cors';
+import queryInsertTweetWithFanout from "./queries/queryImportTweetWithFanout";
+import User from "./types/User";
 
 const PORT = 10005;
 
 const startWebservice = (db: Database) => {
   const app = express();
 
+  app.use(express.json());
   app.use(cors());
 
   //1. Posts of Accounts
@@ -58,6 +61,19 @@ const startWebservice = (db: Database) => {
 
     await queryFanOut(db, userId).then(result => {
       res.send(result);
+    });
+  })
+
+  app.post("/api/fanout/:userId", async (req, res) => {
+    const userId = req.params.userId;
+    const tweet = req.body;
+    if (!tweet)
+      return;
+    const accountWhoWrote = (await queryAccountsUserFollows(db, userId,1) as { user: User }[])[0];
+    await queryInsertTweetWithFanout(db, accountWhoWrote.user._key, tweet).then(result => {
+      res.send(result);
+    }).catch(e => {
+      res.status(500).json(e);
     });
   })
   
