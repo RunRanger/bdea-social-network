@@ -69,12 +69,18 @@ const startWebservice = (db: Database) => {
     const tweet = req.body;
     if (!tweet)
       return;
-    const accountWhoWrote = (await queryAccountsUserFollows(db, userId,1) as { user: User }[])[0];
-    await queryInsertTweetWithFanout(db, accountWhoWrote.user._key, tweet).then(result => {
-      res.send(result);
-    }).catch(e => {
+    try {
+      const accountWhoWrote = (await queryAccountsUserFollows(db, userId,1) as { user: User }[])[0];
+      await queryInsertTweetWithFanout(db, accountWhoWrote.user._key, tweet).then(result => {
+        res.send(result);
+      }).catch(e => {
+        res.status(500).json(e);
+      });
+    }
+    catch (e)
+    {
       res.status(500).json(e);
-    });
+    }
   })
   
   //6. Top 25 tweets of with some words

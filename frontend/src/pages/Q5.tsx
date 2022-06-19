@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   Grid,
   TextField,
   Typography,
@@ -63,17 +64,24 @@ const Q2 = () => {
       <Grid container>
         <UserSelection onClick={handleUserSelect} />
         {selectedUser && (
-          <Grid item xs={12}>
-            <Typography variant="h5" m={3}>
-              Create Tweet of an followed Account
-            </Typography>
-            <TextField
-              label="Content"
-              value={input.content}
-              onChange={(e) => setInput({ ...input, content: e.target.value })}
-            />
-            <Button onClick={handleSubmit}>Submit</Button>
-          </Grid>
+          <>
+            <Grid item xs={12}>
+              <Typography variant="h5" m={3}>
+                Create Tweet of an followed Account
+              </Typography>
+              <TextField
+                label="Content"
+                value={input.content}
+                onChange={(e) =>
+                  setInput({ ...input, content: e.target.value })
+                }
+              />
+              <Button onClick={handleSubmit}>Submit</Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Divider sx={{ p: 3 }} />
+            </Grid>
+          </>
         )}
         {loading ? (
           <Grid item xs={12} display="flex" justifyContent="center">
