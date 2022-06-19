@@ -36,7 +36,7 @@ backend
     > queryPostsOfFollowedUsers.ts
 
 5. Caching der Posts für die Startseite (vgl. 4), erfordert einen sog. Fan-Out in den Cache jedes Followers beim Schreiben eines neuen Posts
-> 
+> queryFanOut
 
 6. Auflisten der 25 beliebtesten Posts, die ein geg. Wort enthalten (falls möglich auch mit UND-Verknüpfung mehrerer Worte)
 > queryTopLikedTweets.ts

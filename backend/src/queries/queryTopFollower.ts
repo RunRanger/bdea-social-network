@@ -1,7 +1,10 @@
 import { Database } from "arangojs";
+import User from "../types/User";
+
+interface Result {user: User, count: number}
 
 const queryTopFollower = async (db: Database, count = 100) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<Result[]>((resolve, reject) => {
     db.query(`
     FOR f IN follows
       COLLECT id = f._to WITH COUNT INTO count

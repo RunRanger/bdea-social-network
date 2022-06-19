@@ -55,10 +55,9 @@ const initData = async (db: Database, limiter = -1) => {
      }
     await readTwitterFollowerRelation(saveFollowerRelationsToDB, 100000);
 
-    
     console.log("READING Tweets")
     let tweets = await (await readTweets());
-    if (limiter !== -1)
+    if (limiter !== -1 && limiter < tweets.length)
       tweets = shuffle(tweets).slice(0, limiter);
    
     console.log("UPLOADING Tweets")
