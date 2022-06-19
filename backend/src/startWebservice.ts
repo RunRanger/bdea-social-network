@@ -1,6 +1,6 @@
 import { Database } from "arangojs";
 import express from 'express';
-import queryAccountsUserFollows from "./queries/queryAccountsUserFollows";
+import queryCountAccountsUserFollows from "./queries/queryCountAccountsUserFollows";
 import queryFanOut from "./queries/queryFanOut";
 import queryFollowerCountOfUser from "./queries/queryFollowerCountOfUser";
 import queryPostsOfAccount from "./queries/queryPostsOfAccount";
@@ -11,6 +11,7 @@ import queryTopFollowersOfUsersWithTopFollowers from "./queries/queryTopFollower
 import queryTopLikedTweets from "./queries/queryTopLikedTweets";
 import cors from 'cors';
 import queryInsertTweetWithFanout from "./queries/queryImportTweetWithFanout";
+import queryAccountsUserFollows from './queries/queryAccountsUserFollows';
 import User from "./types/User";
 
 const PORT = 10005;
@@ -36,7 +37,6 @@ const startWebservice = (db: Database) => {
   app.get('/api/top100followersoftop100followers', async (req, res) => { 
     const top100 = await queryTopFollower(db, 100);
     const top100Ids = top100.map(result => "users/"+result.user._key);
-    console.log(top100Ids)
     await queryTopFollowersOfUsersWithTopFollowers(db, top100Ids, 100).then(result => res.json(result)).catch(e => res.status(500).json(e));
   })
     
@@ -47,7 +47,7 @@ const startWebservice = (db: Database) => {
 
   //4.2 Amount of followed Users of User
   app.get('/api/followingcount/:userId', async (req, res) => {
-    await queryAccountsUserFollows(db, req.params.userId).then(result => res.json(result)).catch(e => res.status(500).json(e));
+    await queryCountAccountsUserFollows(db, req.params.userId).then(result => res.json(result)).catch(e => res.status(500).json(e));
   })
   
   //4.3 Top 25 newest or popular tweets of User
@@ -65,17 +65,20 @@ const startWebservice = (db: Database) => {
   })
 
   app.post("/api/fanout/:userId", async (req, res) => {
+    console.log("called")
     const userId = req.params.userId;
     const tweet = req.body;
     if (!tweet)
       return;
     try {
-      const accountWhoWrote = (await queryAccountsUserFollows(db, userId,1) as { user: User }[])[0];
-      await queryInsertTweetWithFanout(db, accountWhoWrote.user._key, tweet).then(result => {
+    const accountWhoWrote = (await queryAccountsUserFollows(db, userId, 1) as string[])[0];
+    const accountId = accountWhoWrote.slice(6,accountWhoWrote.length)
+      await queryInsertTweetWithFanout(db, accountId, tweet).then(result => {
         res.send(result);
       }).catch(e => {
         res.status(500).json(e);
       });
+
     }
     catch (e)
     {

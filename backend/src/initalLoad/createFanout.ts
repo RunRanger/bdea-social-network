@@ -16,7 +16,7 @@ const createFanout = async (db: Database,  users: User[], limiter = -1) => {
     counter++;
     if (limiter !== -1 && counter > limiter)
       break;
-    const posts = await queryPostsOfFollowedUsers(db, "users/" + user._key, 'newest', -1) as TweetDB[];
+    const posts = await queryPostsOfFollowedUsers(db, user._key, 'newest', -1) as TweetDB[];
     const relations: Relation[] = []
     for (const post of posts)
     {

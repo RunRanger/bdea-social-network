@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { parse } from 'csv-parse';
-import Tweet, {TweetCSV} from '../types/tweet';
-
+import Tweet, { TweetCSV } from '../types/tweet';
+import moment from 'moment';
 const headers = ["author", "content", "country","dateTime", "id", "language","latitude", "longitude", "numberOfLikes", "numberOfShares"];
 
 const readTweets = async () => {
@@ -31,6 +31,7 @@ const normalizeTweets = (tweetsCSV: TweetCSV[]) => {
   return tweetsCSV.map(tweetCSV => {
     let { id, author, ...tweet } = tweetCSV;
     try {
+      tweet.dateTime = moment(tweet.dateTime, "DD/MM/YYYY HH:mm").toDate().getTime();
       tweet.numberOfLikes = parseInt(tweet.numberOfLikes.toString())
       tweet.numberOfShares = parseInt(tweet.numberOfShares.toString())
     }

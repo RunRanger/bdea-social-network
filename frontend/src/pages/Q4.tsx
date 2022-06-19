@@ -18,14 +18,10 @@ interface ReturnType1 {
   user: UserT;
   follower_count: number;
 }
-interface ReturnType2 {
-  user: UserT;
-  count_user_follows: number;
-}
 
 const Q2 = () => {
   const [q1, setQ1] = useState<ReturnType1 | null>();
-  const [q2, setQ2] = useState<ReturnType2 | null>();
+  const [q2, setQ2] = useState<number | null>();
   const [q3, setQ3] = useState<Tweet[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -77,7 +73,7 @@ const Q2 = () => {
                       {"Follower: " + q1.follower_count}
                     </Typography>
                     <Typography variant="subtitle1">
-                      {"Follows: " + q2.count_user_follows}
+                      {"Follows: " + q2}
                     </Typography>
                   </Stack>
                 </Grid>

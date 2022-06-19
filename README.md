@@ -35,10 +35,10 @@ frontend
 4. Auflisten der Informationen für die persönliche Startseite eines beliebigen Accounts (am besten mit den in 2) gefundenen Accounts ausprobieren); die Startseite soll Folgendes beinhalten (als getrennte Queries umsetzen)
 
     * die Anzahl der Follower
-    > queryFollowerCoutOfUser.ts
+    > queryFollowerCountOfUser.ts
 
     * die Anzahl der verfolgten Accounts
-    > queryAccountsUserFollows.ts
+    > queryCountAccountsUserFollows.ts
 
     * wahlweise die 25 neusten oder die 25 beliebtesten Posts der verfolgten Accounts (per DB-Abfrage)
     > queryPostsOfFollowedUsers.ts

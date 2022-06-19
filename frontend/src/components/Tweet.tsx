@@ -49,7 +49,7 @@ function Tweet({ tweet }: Props) {
                   <Typography
                     sx={{ fontSize: "15px", mr: "6px", color: "#555" }}
                   >
-                    {tweet.dateTime}
+                    {new Date(tweet.dateTime).toUTCString()}
                   </Typography>
                 </Box>
                 <Box>

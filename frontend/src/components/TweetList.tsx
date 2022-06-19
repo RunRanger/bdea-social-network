@@ -15,7 +15,7 @@ interface IRowMemo {
 const TweetList = ({ tweets }: Props) => {
   const RowMemo = memo<IRowMemo>(
     ({ data, index, style }) => (
-      <Box key={data[index].id} sx={{ ...style }}>
+      <Box key={index} sx={{ ...style }}>
         <Tweet tweet={data[index]} />
       </Box>
     ),

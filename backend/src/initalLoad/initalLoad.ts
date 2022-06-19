@@ -95,7 +95,7 @@ const initData = async (db: Database, limiter = -1) => {
     console.log("Like Relations: " + (await userLikeRelationsEdgeCollection.count()).count)
 
     console.log("CREATING & UPLOAD Fanout")
-    await createFanout(db, users);
+    await createFanout(db, users, 100);
 
     console.log("INITIAL LOAD COMPLETED");
   }

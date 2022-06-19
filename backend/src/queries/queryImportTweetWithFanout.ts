@@ -7,7 +7,7 @@ const queryInsertTweetWithFanout = async (db: Database, userId: string, tweet: T
     let tweet = (INSERT {
       content: '${tweet.content}',
       country: '${tweet.country}',
-      dateTime: DATE_NOW(),
+      dateTime: ${tweet.dateTime},
       language: '${tweet.language}',
       latitude: '${tweet.latitude}',
       longitude: '${tweet.longitude}',
@@ -16,11 +16,11 @@ const queryInsertTweetWithFanout = async (db: Database, userId: string, tweet: T
     } INTO tweets RETURN NEW)
 
     FOR f IN follows
-      FILTER f._to == 'users/17434613'
+      FILTER f._to == 'users/${userId}'
       INSERT {
-    _from: f._from,
-    _to: tweet[0]._id
-    } INTO fanout
+        _from: f._from,
+        _to: tweet[0]._id
+      } INTO fanout
     
     `).then(result => resolve(result.all())).catch(e => reject(e))
     });

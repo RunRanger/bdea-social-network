@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
   Box,
   Button,
@@ -8,13 +8,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import Tweet from "../types/Tweet";
-import User from "../components/User";
 import UserT from "../types/User";
 import UserSelection from "../components/UserSelection";
 import TweetList from "../components/TweetList";
+import moment from "moment";
 
 interface ReturnType {
   user: UserT;
@@ -28,7 +28,7 @@ const Q2 = () => {
   const [input, setInput] = useState({
     content: "",
     country: "",
-    dateTime: "",
+    dateTime: new Date().getTime(),
     language: "",
     latitude: "",
     longitude: "",
@@ -47,12 +47,11 @@ const Q2 = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(input);
-    await axios.post(
-      "http://localhost:10005/api/fanout/" + selectedUser,
-      input
-    );
-    handleUserSelect(selectedUser);
+    await axios.post("http://localhost:10005/api/fanout/" + selectedUser, {
+      ...input,
+      dateTime: new Date().getTime(),
+    });
+    handleUserSelect(selectedUser)();
   };
 
   const tweetList = useMemo(() => <TweetList tweets={state} />, [state]);

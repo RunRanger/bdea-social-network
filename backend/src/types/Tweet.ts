@@ -2,7 +2,7 @@ interface Tweet {
   author: string,
   content: string,
   country: string,
-  dateTime: string,
+  dateTime: number,
   language: string,
   latitude: number,
   longitude: number,

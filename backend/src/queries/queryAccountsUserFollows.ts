@@ -5,10 +5,9 @@ const queryAccountsUserFollows = async (db: Database, userId: string, limit= -1)
     return new Promise((resolve, reject) => {
         db.query(`
     FOR f IN follows
-      FILTER f._from == '${"users/" +userId}'
-      COLLECT id = f._from WITH COUNT INTO count
+      FILTER f._from == '${"users/" + userId}'
       ${limitStr}
-      RETURN { user: DOCUMENT(id), count_user_follows:count}
+      RETURN f._to
     `).then(result => resolve(result.all())).catch(e => reject(e))
     });
 }
