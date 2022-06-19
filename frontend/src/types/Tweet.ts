@@ -8,7 +8,7 @@ interface Tweet {
   longitude: number,
   numberOfLikes: number,
   numberOfShares: number,
-  id: string
+  _key: string
 }
 
 export default Tweet;
