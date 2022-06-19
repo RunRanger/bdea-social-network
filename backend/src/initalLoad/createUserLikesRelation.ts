@@ -11,9 +11,6 @@ const createUserLikesRelation = async (users: User[], tweets: Tweet[], tweetIds:
   
   const availablePortion = Math.floor(likes / users.length);
 
-  console.log("Max Likes: " + likes);
-  console.log("Available Portion: " + availablePortion);
-  console.log("tweets: " + tweets.length);
   let prevPercentage = -1;
   for (let index = 0; index < tweets.length; index++)
   {

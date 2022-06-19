@@ -9,10 +9,12 @@ import Relation from '../types/Relation';
 import Tweet from '../types/tweet';
 import User from '../types/User';
 import { DocumentCollection } from 'arangojs/collection';
+import createFanout from './createFanout';
+import shuffle from '../utils/shuffleArray';
 
 const DB_NAME = "socialNetwork"
 
-const runInitalLoad = async () => {
+const runInitalLoad = async (limiter = -1) => {
   const initDb = new Database('http://127.0.0.1:11001');
   const dbs = await initDb.databases();
   if (dbs.findIndex(db => db.name === DB_NAME) !== -1)
@@ -20,17 +22,14 @@ const runInitalLoad = async () => {
   return initDatabase(initDb);
 }
 
-const initDatabase = async (db: Database) => {
+const initDatabase = async (db: Database, limiter = -1) => {
   console.log("CREATING Database")
   const initDb = await db.createDatabase(DB_NAME)
-  await initData(initDb);
+  await initData(initDb, limiter);
   return initDb;
 }
 
-
-
-
-const initData = async (db: Database) => {
+const initData = async (db: Database, limiter = -1) => {
   try {
     console.log("READING Users")
     const users = await readTwitterUsers()
@@ -56,9 +55,10 @@ const initData = async (db: Database) => {
      }
     await readTwitterFollowerRelation(saveFollowerRelationsToDB, 100000);
 
-    
     console.log("READING Tweets")
-    const tweets = await readTweets();
+    let tweets = await (await readTweets());
+    if (limiter !== -1 && limiter < tweets.length)
+      tweets = shuffle(tweets).slice(0, limiter);
    
     console.log("UPLOADING Tweets")
     let tweetIds: string[] = [];
@@ -67,8 +67,9 @@ const initData = async (db: Database) => {
     await tweetCollection.saveAll(tweetsDB).then((docs) => { tweetIds = docs.map(doc => doc._key) },
       err => console.error('Failed to fetch document:', err)
     )
+
     tweetsDB = [];
-    
+
     console.log("CREATING Author Tweet Relations")
     let authorTweetsCollection: UserTweetsCollection|null = assignTweetUser(tweets, users);
     let authorTweetRelations: Relation[]|null = createAuthorTweetRelation(authorTweetsCollection, tweetIds)
@@ -81,10 +82,8 @@ const initData = async (db: Database) => {
     authorTweetsCollection = null;
     authorTweetRelations = null;
     
-
-
     console.log("CREATING & UPLOADING User Like Relations")
-    const userLikeRelationsEdgeCollection = await db.createEdgeCollection<Relation>("likes")
+    const userLikeRelationsEdgeCollection = await db.createEdgeCollection<Relation>("liked")
     const saveLikesToDB = async (relations: Relation[]) => {
       try {
         await userLikeRelationsEdgeCollection.saveAll(relations)
@@ -94,6 +93,9 @@ const initData = async (db: Database) => {
     }
     await createUserLikesRelation(users, tweets, tweetIds, saveLikesToDB);
     console.log("Like Relations: " + (await userLikeRelationsEdgeCollection.count()).count)
+
+    console.log("CREATING & UPLOAD Fanout")
+    await createFanout(db, users);
 
     console.log("INITIAL LOAD COMPLETED");
   }
