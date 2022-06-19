@@ -1,3 +1,8 @@
+# Team
+Anton Bracke
+Jan Mayer
+Julian Becker
+
 # Setup
 container
 >cd .devcontainer
