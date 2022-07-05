@@ -13,6 +13,7 @@ import cors from 'cors';
 import queryInsertTweetWithFanout from "./queries/queryImportTweetWithFanout";
 import queryAccountsUserFollows from './queries/queryAccountsUserFollows';
 import User from "./types/User";
+import clear from "./utils/clear";
 
 const PORT = 10005;
 
@@ -59,8 +60,8 @@ const startWebservice = (db: Database) => {
   app.get("/api/fanout/:userId", async (req, res) => {
     const userId = req.params.userId;
 
-    await queryFanOut(db, userId).then(result => {
-      res.send(result);
+    await queryFanOut(db, userId, 100).then(result => {
+      res.send(clear(result));
     });
   })
 

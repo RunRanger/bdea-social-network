@@ -3,7 +3,9 @@ import Tweet from "../types/Tweet";
 
 const queryInsertTweetWithFanout = async (db: Database, userId: string, tweet: Tweet) => {
   return new Promise((resolve, reject) => {
-        db.query(`
+
+
+  db.query(`
     let tweet = (INSERT {
       content: '${tweet.content}',
       country: '${tweet.country}',
@@ -17,11 +19,16 @@ const queryInsertTweetWithFanout = async (db: Database, userId: string, tweet: T
 
     FOR f IN follows
       FILTER f._to == 'users/${userId}'
+      UPSERT {
+        _from: f._from,
+        _to: tweet[0]._id
+      } 
       INSERT {
         _from: f._from,
         _to: tweet[0]._id
-      } INTO fanout
-    
+      } 
+      UPDATE { }
+      IN fanout
     `).then(result => resolve(result.all())).catch(e => reject(e))
     });
 }
